@@ -1,10 +1,12 @@
 import numpy as np
 import pandas as pd
+import os
 
 class DataImport:
     def init(self, fund_holdings_file: str):
         self._fund_holdings_file = fund_holdings_file
-
+        self._API_TOKEN = os.environ['SEC-API-TOKEN']
+        
     def individual_fund_holdings_folder(self, CIK: str) -> str:
         """ creates folder for fund holdings if it doesn't exist or returns folder name if it does
 
