@@ -4,6 +4,7 @@ import os
 import logging
 
 from sec_api import FormNportApi
+from sec_api import MappingApi
 
 class DataImport:
     def __init__(self, fund_holdings_file: str):
@@ -21,12 +22,12 @@ class DataImport:
         token_value = ""
 
         try:
-            token_value = os.environ['SEC_API_TOKEN'] 
+            token_value = os.environ['SEC_API_TOKEN']
         except KeyError:
             logging.error("Unable to find sec-api token in environment variables")
-            
+
         return token_value
-    
+
     def individual_fund_holdings_folder(self, CIK: str) -> str:
         """ creates folder for fund holdings if it doesn't exist or returns folder name if it does
 
@@ -40,19 +41,12 @@ class DataImport:
     def import_fund_holdings_csv_to_dict(self) -> None:
         """ converts CSV of fund holdings to a dictionary """
 
-    def pull_fund_holdings(self, CIK: str) -> list:
-        """ queries API to pull latest fund holdings and returns a list of holdings """
- 
-        response = self.nportApi.get_data(
-            {
-                "query": {"query_string": {
-                    "query": f"genInfo.regCik:{CIK}"
-                    }
-                },
-            }
-        )
+    def pull_and_save_fund_holdings(self, CIK: str) -> None:
+        """ queries API to pull latest fund holdings and saves as a CSV """
 
-        return dict(response['filings'][0])['invstOrSecs']
+        nportApi = FormNportApi("INPUT API TOKEN HERE")
+
+        response = nportApi.get_data(
 
     def convert_holdings_list_to_df(self, holdings: list) -> pd.DataFrame:
         """ takes in a list of holdings from sec-api and converts it to a DataFrame
@@ -84,5 +78,6 @@ class DataImport:
         Returns:
             str: ticker of the company that issued that security
         """
-    
-    
+        mappingApi = MappingApi(api_key = self._API_TOKEN)
+        result = mappingApi.resolve("cusip", CUSIP)
+        return result[0]['ticker']
