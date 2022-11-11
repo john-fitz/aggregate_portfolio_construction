@@ -26,7 +26,7 @@ class DataImport:
             logging.error("Unable to find sec-api token in environment variables")
             
         return token_value
-    
+
     def individual_fund_holdings_folder(self, CIK: str) -> str:
         """ creates folder for fund holdings if it doesn't exist or returns folder name if it does
 
@@ -36,9 +36,6 @@ class DataImport:
         Returns:
             str: pathway to folder for holdings
         """
-
-    def import_fund_holdings_csv_to_dict(self) -> None:
-        """ converts CSV of fund holdings to a dictionary """
 
     def pull_fund_holdings(self, CIK: str) -> list:
         """ queries API to pull latest fund holdings and returns a list of holdings """
@@ -84,5 +81,3 @@ class DataImport:
         Returns:
             str: ticker of the company that issued that security
         """
-    
-    
