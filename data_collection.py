@@ -51,6 +51,7 @@ class DataImport:
 
     def query_10_filings(self, CIK: str, start: int) -> None:
         """ queries API to pull latest fund holdings and saves as a CSV """
+        
         nportApi = FormNportApi(self.API_TOKEN)
         
         response = nportApi.get_data(
