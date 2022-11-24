@@ -25,6 +25,10 @@ class PortfolioConstructor:
     
     
     def add_investment_amounts(self, fund_holdings: dict, portfolio_fund_holdings: dict) -> dict:
+        
+        fund_holdings = fund_holdings.merge(portfolio_fund_holdings, left_on = 'name', right_on = 'holding')
+        fund_holding.drop(columns = ['holding_type', 'country', 'sector'], axis = 0)
+        self._portfolio_fund_holdings = dict(zip(fund_holding['holding'], fund_holding['investment_amt'].astype(float)))
         """adds column in each dataframe for the dollar amount invested in that holding for that fund
     
         Returns:
