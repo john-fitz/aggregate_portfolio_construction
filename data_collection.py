@@ -52,8 +52,9 @@ class DataImport:
             str: pathway to folder for holdings
         """
 
-    def import_fund_holdings_csv_to_dict(self) -> None:
+    def import_fund_holdings_csv_to_dict(self, holdings: pd.DataFrame) -> None:
         """ converts CSV of fund holdings to a dictionary """
+        
 
     def query_10_filings(self, CIK: str, start: int) -> None:
         """ queries API to pull latest fund holdings and saves as a CSV """
@@ -142,3 +143,13 @@ class DataImport:
         
         return result
 
+    def generate_and_save_holdings(self, list_of_funds: list) -> None:
+        """ goes through list of funds, pulls their holdings, and saves holdings as CSV
+
+        Args:
+            list_of_funds (list): list of tuples of strings of (CIK, series) per fund
+        """
+        for CIK, series in list_of_funds:
+            fund_holdings = self.import_holdings_df(CIK, series)
+            fund_holdings['ticker'] = fund_holdings['CUSIP'].apply(lambda x: self.CUSIP_to_ticker(x))
+            self.import_fund_holdings_csv_to_dict(fund_holdings)
