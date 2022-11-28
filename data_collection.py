@@ -21,8 +21,9 @@ class DataImport:
         return token
 
     @property
-    def nportApi(self):
+    def nportAPI(self):
         return FormNportApi(self.API_TOKEN)
+
 
     def import_API_token(self) -> str:
         """ tests if API token exists and returns value if it does """
@@ -52,9 +53,9 @@ class DataImport:
     def query_10_filings(self, CIK: str, start: int) -> None:
         """ queries API to pull latest fund holdings and saves as a CSV """
         
-        nportApi = FormNportApi(self.API_TOKEN)
+        nportAPI = self.nportAPI
         
-        response = nportApi.get_data(
+        response = nportAPI.get_data(
             {
                 "query": {"query_string": {
                     "query": f"genInfo.regCik:{CIK}"
@@ -126,3 +127,4 @@ class DataImport:
         Returns:
             str: ticker of the company that issued that security
         """
+
