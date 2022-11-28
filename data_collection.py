@@ -4,6 +4,7 @@ import os
 import numpy as np
 import pandas as pd
 from sec_api import FormNportApi
+from sec_api import MappingApi
 
 
 class DataImport:
@@ -23,6 +24,10 @@ class DataImport:
     @property
     def nportAPI(self):
         return FormNportApi(self.API_TOKEN)
+
+    @property
+    def mappingAPI(self):
+        return MappingApi(self.API_TOKEN)
 
 
     def import_API_token(self) -> str:
@@ -127,4 +132,13 @@ class DataImport:
         Returns:
             str: ticker of the company that issued that security
         """
+        mappingAPI = self.mappingAPI
+        
+        try:
+            result = mappingAPI.resolve("cusip", CUSIP)[0].ticker
+        except:
+            result = ""
+            logging.error(f"Unable to find ticker symbol for CUSIP: {CUSIP}")
+        
+        return result
 
