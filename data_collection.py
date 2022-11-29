@@ -1,8 +1,10 @@
+import numpy as np
+import pandas as pd
+
+from datetime import date
 import logging
 import os
 
-import numpy as np
-import pandas as pd
 from sec_api import FormNportApi
 from sec_api import MappingApi
 
@@ -129,31 +131,30 @@ class DataImport:
         
         return result
 
-    def generate_and_save_holdings(self, list_of_funds: list) -> None:
+    def generate_and_save_holdings(self, list_of_funds: list, save_folder_pathway: str) -> None:
         """ goes through list of funds, pulls their holdings, and saves holdings as CSV
 
         Args:
             list_of_funds (list): list of tuples of strings of (CIK, series) per fund
+            save_folder_pathway (str): pathway to today's folder to save outputs
         """
         for CIK, series in list_of_funds:
             fund_holdings = self.import_holdings_df(CIK, series)
             fund_holdings['ticker'] = fund_holdings['CUSIP'].apply(lambda x: self.CUSIP_to_ticker(x))
-            self.import_fund_holdings_csv_to_dict(fund_holdings)
+            self.save_fund_holdings(fund_holdings=fund_holdings, CIK=CIK, series=series, save_folder_pathway=save_folder_pathway)
 
-    def current_holdings_folder(self) -> str:
-        """ finds folder for today's holdings or creates a new one if it doesn't exist
-
-        Returns:
-            str: pathway to folder to save holdings CSVs
-        """
-
-    def save_fund_holdings(self, CIK: str, series: str) -> None:
+    def save_fund_holdings(self, fund_holdings: pd.DataFrame, CIK: str, series: str, save_folder_pathway: str) -> None:
         """ saves fund holdings in the current folder
 
         Args:
+            fund_holdings (pd.DataFrame): DataFrame of fund holdings pulled from SEC API
             CIK (str): CIK corresponding to the fund's parent co.
             series (str): series corresponding to the fund
+            save_folder_pathway (str): folder for the day in which to save information
         """
+        todays_date = date.today()
+        file_pathway = f"{save_folder_pathway}/{CIK}_{series}_{todays_date}"
+        fund_holdings.to_csv(file_pathway)
         
         
 
