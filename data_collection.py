@@ -10,8 +10,9 @@ from sec_api import MappingApi
 
 
 class DataImport:
-    def init(self, fund_holdings: dict):
-        self.fund_holdings = fund_holdings
+    def __init__(self, list_of_funds: list, save_folder_pathway: str):
+        self._list_of_funds = list_of_funds
+        self._save_folder_pathway = save_folder_pathway
 
     @property
     def API_TOKEN(self):
@@ -23,6 +24,14 @@ class DataImport:
         
         return token
 
+    @property
+    def save_folder_pathway(self):
+        return self._save_folder_pathway
+    
+    @property
+    def list_of_funds(self):
+        return self._list_of_funds
+    
     @property
     def nportAPI(self):
         return FormNportApi(self.API_TOKEN)
@@ -109,8 +118,12 @@ class DataImport:
                 data['invested_amt_usd'].append(holding['valUSD'])
                 data['percent_of_portfolio'].append(holding['pctVal'])
                 data['country'].append(holding['invCountry'])
+            result = pd.DataFrame.from_dict(data)
+        
+        else:
+            result = None
 
-        return pd.DataFrame.from_dict(data)
+        return result
     
     def CUSIP_to_ticker(self, CUSIP: str) -> str:
         """ looks up the CUSIP string and returns a ticker for the company that issued that security
@@ -124,26 +137,29 @@ class DataImport:
         mappingAPI = self.mappingAPI
         
         try:
-            result = mappingAPI.resolve("cusip", CUSIP)[0].ticker
+            result = mappingAPI.resolve("cusip", CUSIP)[0]['ticker']
         except:
-            result = ""
+            result = np.nan
             logging.error(f"Unable to find ticker symbol for CUSIP: {CUSIP}")
         
         return result
 
-    def generate_and_save_holdings(self, list_of_funds: list, save_folder_pathway: str) -> None:
+    def generate_and_save_holdings(self) -> None:
         """ goes through list of funds, pulls their holdings, and saves holdings as CSV
 
         Args:
             list_of_funds (list): list of tuples of strings of (CIK, series) per fund
             save_folder_pathway (str): pathway to today's folder to save outputs
         """
+        list_of_funds = self.list_of_funds
+        
         for CIK, series in list_of_funds:
             fund_holdings = self.import_holdings_df(CIK, series)
-            fund_holdings['ticker'] = fund_holdings['CUSIP'].apply(lambda x: self.CUSIP_to_ticker(x))
-            self.save_fund_holdings(fund_holdings=fund_holdings, CIK=CIK, series=series, save_folder_pathway=save_folder_pathway)
+            if fund_holdings is not None:
+                fund_holdings['ticker'] = fund_holdings['CUSIP'].apply(lambda x: self.CUSIP_to_ticker(x))
+                self.save_fund_holdings(fund_holdings=fund_holdings, CIK=CIK, series=series)
 
-    def save_fund_holdings(self, fund_holdings: pd.DataFrame, CIK: str, series: str, save_folder_pathway: str) -> None:
+    def save_fund_holdings(self, fund_holdings: pd.DataFrame, CIK: str, series: str) -> None:
         """ saves fund holdings in the current folder
 
         Args:
@@ -153,8 +169,6 @@ class DataImport:
             save_folder_pathway (str): folder for the day in which to save information
         """
         todays_date = date.today()
-        file_pathway = f"{save_folder_pathway}/{CIK}_{series}_{todays_date}"
+        file_pathway = f"{self.save_folder_pathway}/{CIK}_{series}_{todays_date}.csv"
         fund_holdings.to_csv(file_pathway)
-        
-        
 
