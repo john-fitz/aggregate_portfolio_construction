@@ -42,20 +42,6 @@ class DataImport:
             
         return token_value
 
-    def individual_fund_holdings_folder(self, CIK: str) -> str:
-        """ creates folder for fund holdings if it doesn't exist or returns folder name if it does
-
-        Args:
-            CIK (str): fund CIK number used for SEC filings
-
-        Returns:
-            str: pathway to folder for holdings
-        """
-
-    def import_fund_holdings_csv_to_dict(self, holdings: pd.DataFrame) -> None:
-        """ converts CSV of fund holdings to a dictionary """
-        
-
     def query_10_filings(self, CIK: str, start: int) -> None:
         """ queries API to pull latest fund holdings and saves as a CSV """
         
@@ -153,3 +139,21 @@ class DataImport:
             fund_holdings = self.import_holdings_df(CIK, series)
             fund_holdings['ticker'] = fund_holdings['CUSIP'].apply(lambda x: self.CUSIP_to_ticker(x))
             self.import_fund_holdings_csv_to_dict(fund_holdings)
+
+    def current_holdings_folder(self) -> str:
+        """ finds folder for today's holdings or creates a new one if it doesn't exist
+
+        Returns:
+            str: pathway to folder to save holdings CSVs
+        """
+
+    def save_fund_holdings(self, CIK: str, series: str) -> None:
+        """ saves fund holdings in the current folder
+
+        Args:
+            CIK (str): CIK corresponding to the fund's parent co.
+            series (str): series corresponding to the fund
+        """
+        
+        
+
