@@ -8,39 +8,42 @@ class DataVisualizations:
         self.df = df
         self.df['nation'] = self.df['country'].apply(lambda x: 'Domestic' if x == 'US' else 'International')
         
-     # Compare total count by U.S. and other nations
     def compareTotalCount(self) -> None:
+        """ Compare total count by U.S. and other nations """
         sns.countplot(data = self.df, x = 'nation').set(title = 'International')
     
-    def compareSumbyNation(self):
+    def compareSumbyNation(self) -> None:
         """ Compare the sum of total investment by nations """
         a = self.df.groupby('nation')['investment_amt'].sum().reset_index()
         a.set_index('nation', inplace = True)
         a.plot(kind = 'bar')
         
-    
-    def CompareFiveUS(self):
+    def CompareFiveUS(self) -> None:
         """ Compare the 5 most investment in U.S. """
+        
         us5 = self.df[self.df['country'] == 'US'].sort_values('investment_amt', ascending = False).head()
         us5['investment_amt'].plot(kind = 'bar')
         plt.title('5 the most investment in US')
 
-    def compareSectorUS(self):
+    def compareSectorUS(self) -> None:
         """ comparing by sector in the US """
+        
         sns.countplot(data = self.df, x = 'sector').set(title = 'Sectors')
     
-    def distribution(self):
+    def distribution(self) -> None:
         """ Distribution of Investment Amount """
+        
         ax = sns.distplot(self.df['investment_amt'])
         sns.set(font_scale = 1.7)
         
         
-    def compareHolding(self):
+    def compareHolding(self) -> None:
         """ Comparing holding types """
+        
         sns.catplot(x = 'holding_type', kind = 'count', data = self.df).set(Title = '0 = fund, 1 = stock')
         plt.show()
         
-    def makePie(self):
+    def makePie(self) -> None:
         """ Pie Charts """
         y = np.array([35, 25, 25, 15])
         
