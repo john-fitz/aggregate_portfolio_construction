@@ -1,14 +1,18 @@
+import numpy as np
+import pandas as pd
+
+from datetime import date
 import logging
 import os
 
-import numpy as np
-import pandas as pd
 from sec_api import FormNportApi
+from sec_api import MappingApi
 
 
 class DataImport:
-    def init(self, fund_holdings: dict):
-        self.fund_holdings = fund_holdings
+    def __init__(self, list_of_funds: list, save_folder_pathway: str):
+        self._list_of_funds = list_of_funds
+        self._save_folder_pathway = save_folder_pathway
 
     @property
     def API_TOKEN(self):
@@ -21,8 +25,20 @@ class DataImport:
         return token
 
     @property
+    def save_folder_pathway(self):
+        return self._save_folder_pathway
+    
+    @property
+    def list_of_funds(self):
+        return self._list_of_funds
+    
+    @property
     def nportAPI(self):
         return FormNportApi(self.API_TOKEN)
+
+    @property
+    def mappingAPI(self):
+        return MappingApi(self.API_TOKEN)
 
 
     def import_API_token(self) -> str:
@@ -36,19 +52,6 @@ class DataImport:
             logging.error("Unable to find sec-api token in environment variables")
             
         return token_value
-
-    def individual_fund_holdings_folder(self, CIK: str) -> str:
-        """ creates folder for fund holdings if it doesn't exist or returns folder name if it does
-
-        Args:
-            CIK (str): fund CIK number used for SEC filings
-
-        Returns:
-            str: pathway to folder for holdings
-        """
-
-    def import_fund_holdings_csv_to_dict(self) -> None:
-        """ converts CSV of fund holdings to a dictionary """
 
     def query_10_filings(self, CIK: str, start: int) -> None:
         """ queries API to pull latest fund holdings and saves as a CSV """
@@ -115,8 +118,12 @@ class DataImport:
                 data['invested_amt_usd'].append(holding['valUSD'])
                 data['percent_of_portfolio'].append(holding['pctVal'])
                 data['country'].append(holding['invCountry'])
+            result = pd.DataFrame.from_dict(data)
+        
+        else:
+            result = None
 
-        return pd.DataFrame.from_dict(data)
+        return result
     
     def CUSIP_to_ticker(self, CUSIP: str) -> str:
         """ looks up the CUSIP string and returns a ticker for the company that issued that security
@@ -127,4 +134,41 @@ class DataImport:
         Returns:
             str: ticker of the company that issued that security
         """
+        mappingAPI = self.mappingAPI
+        
+        try:
+            result = mappingAPI.resolve("cusip", CUSIP)[0]['ticker']
+        except:
+            result = np.nan
+            logging.error(f"Unable to find ticker symbol for CUSIP: {CUSIP}")
+        
+        return result
+
+    def generate_and_save_holdings(self) -> None:
+        """ goes through list of funds, pulls their holdings, and saves holdings as CSV
+
+        Args:
+            list_of_funds (list): list of tuples of strings of (CIK, series) per fund
+            save_folder_pathway (str): pathway to today's folder to save outputs
+        """
+        list_of_funds = self.list_of_funds
+        
+        for CIK, series in list_of_funds:
+            fund_holdings = self.import_holdings_df(CIK, series)
+            if fund_holdings is not None:
+                fund_holdings['ticker'] = fund_holdings['CUSIP'].apply(lambda x: self.CUSIP_to_ticker(x))
+                self.save_fund_holdings(fund_holdings=fund_holdings, CIK=CIK, series=series)
+
+    def save_fund_holdings(self, fund_holdings: pd.DataFrame, CIK: str, series: str) -> None:
+        """ saves fund holdings in the current folder
+
+        Args:
+            fund_holdings (pd.DataFrame): DataFrame of fund holdings pulled from SEC API
+            CIK (str): CIK corresponding to the fund's parent co.
+            series (str): series corresponding to the fund
+            save_folder_pathway (str): folder for the day in which to save information
+        """
+        todays_date = date.today()
+        file_pathway = f"{self.save_folder_pathway}/{CIK}_{series}_{todays_date}.csv"
+        fund_holdings.to_csv(file_pathway)
 
