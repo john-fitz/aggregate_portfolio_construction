@@ -98,4 +98,4 @@ class Visual:
         # if this is name of companies
 
         plt.pie(y, labels = mylabels, explode = myexplode)
-        plt.show() 
+        plt.show()
