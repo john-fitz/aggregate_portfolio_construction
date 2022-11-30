@@ -79,45 +79,5 @@ class PortfolioConstructor:
     def define_combined_full_portfolio(self) -> None:
         """Combines fund holdings and individual stock holdings"""
         
-        
-        
-##Data Visualization
-class Visual:
-    df['nation'] = df['country'].apply(lambda x: 'Domestic' if x == 'US' else 'International')
-     # Compare total count by U.S. and other nations
-    def compareTotalCount():
-        sns.countplot(data = df, x = 'nation').set(title = 'International')
-        # Compare the sum of total investment by nations
-    def compareSumbyNation():
-        a = df.groupby('nation')['investment_amt'].sum().reset_index()
-        a.set_index('nation', inplace = True)
-        a.plot(kind = 'bar')
-    # Compare the 5 most investment in U.S.
-    def CompareFiveUS():
-        us5 = df[df['country'] == 'US'].sort_values('investment_amt', ascending = False).head()
-        us5['investment_amt'].plot(kind = 'bar')
-        plt.title('5 the most investment in US')
-
-    # also can do this to the world
-    # Comapring by sector in US
-    def compareSectorUS():
-        sns.countplot(data = df, x = 'sector').set(title = 'Sectors')
-        # Distribution of Investment Amount
-    def distribution():
-        ax = sns.distplot(df['investment_amt'])
-        sns.set(font_scale = 1.7)
-        # Comparing holding types
-    def compareHolding():
-        sns.catplot(x = 'holding_type', kind = 'count', data = df).set(Title = '0 = fund, 1 = stock')
-        plt.show()
-        # pie charts()
-    def makePie():
-        y = np.array([35, 25, 25, 15])
-        # if this is the investement amount of four companies
-        mylabels = ["Apples", "Bananas", "Cherries", "Dates"]
-        myexplode = [0.2, 0, 0, 0]
-
-        # if this is name of companies
-
-        plt.pie(y, labels = mylabels, explode = myexplode)
-        plt.show()
+    
+    
