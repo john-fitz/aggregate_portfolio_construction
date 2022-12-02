@@ -145,21 +145,15 @@ class DataImport:
         return result
 
     def generate_and_save_holdings(self) -> None:
-        """ goes through list of funds, pulls their holdings, and saves holdings as CSV
-
-        Args:
-            list_of_funds (list): list of tuples of strings of (CIK, series) per fund
-            save_folder_pathway (str): pathway to today's folder to save outputs
-        """
-        list_of_funds = self.list_of_funds
+        """ goes through list of funds, pulls their holdings, and saves holdings as CSV """
         
-        for CIK, series in list_of_funds:
+        for ticker, CIK, series in self.list_of_funds:
             fund_holdings = self.import_holdings_df(CIK, series)
             if fund_holdings is not None:
                 fund_holdings['ticker'] = fund_holdings['CUSIP'].apply(lambda x: self.CUSIP_to_ticker(x))
-                self.save_fund_holdings(fund_holdings=fund_holdings, CIK=CIK, series=series)
+                self.save_fund_holdings(fund_holdings=fund_holdings, ticker=ticker)
 
-    def save_fund_holdings(self, fund_holdings: pd.DataFrame, CIK: str, series: str) -> None:
+    def save_fund_holdings(self, fund_holdings: pd.DataFrame, ticker: str) -> None:
         """ saves fund holdings in the current folder
 
         Args:
@@ -168,7 +162,6 @@ class DataImport:
             series (str): series corresponding to the fund
             save_folder_pathway (str): folder for the day in which to save information
         """
-        todays_date = date.today()
-        file_pathway = f"{self.save_folder_pathway}/{CIK}_{series}_{todays_date}.csv"
+        file_pathway = f"{self.save_folder_pathway}/{ticker}.csv"
         fund_holdings.to_csv(file_pathway)
 
