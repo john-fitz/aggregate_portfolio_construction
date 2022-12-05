@@ -114,8 +114,21 @@ class PortfolioConstructor:
             None: sets self._combined_fund_portfolio as the combined amounts of stocks held in portfolio
         """
 
+        self._combined_fund_portfolio = {}
+        for fund in portfolio_fund_holdings.keys():
+            fund_holdings_df = fund_holdings[fund]
+            fund_amt = portfolio_fund_holdings[fund]['investment_amt']
+            for ticker in fund_holdings_df['holding']:
+                tick_amt = fund_holdings_df.investment_amt.loc[fund_holdings_df['holding'] == ticker]
+                self._combined_fund_portfolio[ticker] = self._combined_fund_portfolio.setdefault(ticker, 0) + fund_amt*tick_amt
 
 
 
     def define_combined_full_portfolio(self) -> None:
         """Combines fund holdings and individual stock holdings"""
+        self._combined_fund_portfolio = self._portfolio_stock_holdings_dict
+        for fund in self.portfolio_fund_holdings.keys():
+            fund_holdings_df = self.fund_holdings[fund]
+            fund_amt = self.portfolio_fund_holdings[fund]['investment_amt']
+            for ticker in self.fund_holdings[fund]['holding']:
+                tick_amt = fund_holdings_df.investment_amt.loc[fund_holdings_df['holding'] == ticker]                self._combined_fund_portfolio[ticker] = self._combined_fund_portfolio.setdefault(ticker, 0) + fund_amt*tick_amt

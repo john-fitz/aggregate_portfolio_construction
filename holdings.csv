@@ -1,0 +1,10 @@
+holding,investment_amt,holding_type,sector,country
+LCLAX,10000,fund,nan,nan
+MAPTX,10000,fund,nan,nan
+SCHB,10000,fund,nan,nan
+IYK,10000,fund,nan,nan
+SCHA,10000,fund,nan,nan
+SCHM,10000,fund,nan,nan
+AAPL,2000,stock,Technology,US
+test_stock,2000,stock,Technology,US
+SPY,10000,fund,nan,nan
