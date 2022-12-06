@@ -112,7 +112,7 @@ class PortfolioAnalysis:
     
     def aggregate_portfolio(self) -> None:
         PC = PortfolioConstructor(self.portfolio_stock_holdings_df, self.portfolio_fund_holdings_df, self.holdings_folder)
-        self._aggregated_holdings = PC.full_portfolio_holdings()
+        self._aggregated_holdings = PC.full_portfolio_holdings
     
     
     

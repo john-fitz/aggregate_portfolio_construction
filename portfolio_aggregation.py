@@ -5,6 +5,7 @@ import logging
 import os
 from typing import Dict
 import glob
+import copy
 
 
 class PortfolioConstructor:
@@ -14,9 +15,21 @@ class PortfolioConstructor:
         self._fund_holdings_pathway = fund_holdings_pathway
         
         self.import_fund_holdings()
-        self.define_combined_fund_portfolio(self.portfolio_fund_holdings_df, self.fund_holdings_dict)
+        self.define_combined_fund_portfolio(self.fund_holdings_dict, self.portfolio_fund_amts)
         self.define_combined_full_portfolio()
 
+    @property
+    def portfolio_fund_amts(self):
+        return dict(zip(self.portfolio_fund_holdings_df['ticker'], self.portfolio_fund_holdings_df['investment_amt']))
+    
+    @property 
+    def portfolio_stock_holdings_df(self):
+        return self._portfolio_stock_holdings_df
+    
+    @property 
+    def portfolio_fund_holdings_df(self):
+        return self._portfolio_fund_holdings_df
+    
     @property
     def fund_holdings_dict(self):
         return self._fund_holdings_dict
@@ -31,7 +44,15 @@ class PortfolioConstructor:
 
     @property
     def fund_holdings_pathway(self):
-        return self.__fund_holdings_pathway
+        return self._fund_holdings_pathway
+    
+    @property
+    def combined_fund_portfolio(self):
+        return self._combined_fund_portfolio
+    
+    @property 
+    def full_portfolio_holdings(self):
+        return self._full_portfolio_holdings
 
     def import_fund_holdings(self) -> Dict[str, pd.DataFrame]:
         """read in all of the fund holdings from the folder into a dictionary
@@ -39,22 +60,24 @@ class PortfolioConstructor:
         Returns:
             dict: key: fund name, value: DataFrame of holdings
         """
-        all_files = glob.glob(os.path.join(self._fund_holdings_folder_name + '/', "*.csv"))
+        all_files = glob.glob(os.path.join(self.fund_holdings_pathway + '/', "*.csv"))
         fund_holdings = {}
 
         for filename in all_files:
             fund_name = filename
-            fund_name = fund_name.removeprefix(self._fund_holdings_folder_name + '/')
-            fund_name = fund_name.removesuffix('_holdings.csv')
+            fund_name = fund_name.removeprefix(self.fund_holdings_pathway + '/')
+            fund_name = fund_name.removesuffix('.csv')
             try: 
                 df = pd.read_csv(filename, index_col=None, header=0)
                 
                 # remap column types
-                column_dtype_map = {"ticker": str, 
-                                    "name": str,
-                                    "weight": float,
+                column_dtype_map = {"company_name": str, 
+                                    "CUSIP": str,
+                                    "num_holdings": float,
+                                    "invested_amt_usd": float,
+                                    "percent_of_portfolio": float,
                                     "country": str,
-                                    "sector": str,
+                                    "ticker": str,
                                     }
                 
                 df = df.astype(column_dtype_map)
@@ -71,11 +94,11 @@ class PortfolioConstructor:
         val = None
 
         if holding_type == "funds":
-            val = dict(zip(self.portfolio_fund_holdings_df['holding'], self.portfolio_fund_holdings_df['investment_amt'].astype(float)))
+            val = dict(zip(self.portfolio_fund_holdings_df['ticker'], self.portfolio_fund_holdings_df['investment_amt'].astype(float)))
         elif holding_type == "stocks":
-            val = dict(zip(self.portfolio_stock_holdings_df['holding'], self.portfolio_stock_holdings_df['investment_amt'].astype(float)))
+            val = dict(zip(self.portfolio_stock_holdings_df['ticker'], self.portfolio_stock_holdings_df['investment_amt'].astype(float)))
         else:
-            val = dict(zip(self.portfolio_fund_holdings_df['holding'], self.portfolio_fund_holdings_df['investment_amt'].astype(float)))
+            val = dict(zip(self.portfolio_fund_holdings_df['ticker'], self.portfolio_fund_holdings_df['investment_amt'].astype(float)))
             logging.error("Invalid holding type request, returning dictionary of stock values as default")
 
         return val
@@ -84,20 +107,23 @@ class PortfolioConstructor:
     def add_investment_amounts(self, fund_holdings: dict, portfolio_fund_holdings: dict) -> dict:
         """adds column in each dataframe for the dollar amount invested in that holding for that fund
 
+        Args:
+            fund_holdings (dict, optional): dict of fund names and DataFrames of their holdings. Defaults to self.fund_holdings.
+            portfolio_fund_holdings (dict, optional): dict of fund names and how much is invested in each. Defaults to self.portfolio_fund_holdings.
+
         Returns:
             dict: dict of holding_name as keys and DataFrames of their holdings as values
         """
-        dict = {}
-        fund_holdings_dict = self.holdings_amt_dict(holding_type='funds')
-        
-        for key in fund_holdings_dict.keys():
-            self._portfolio_fund_holdings_df[key] = fund_holdings_dict[key]['investment_amt']
-            dict[key] = portfolio_funds[key]['investment_amt']
+        fund_holdings = copy.deepcopy(fund_holdings)
 
-        for key in fund_holdings.keys():
-            self._fund_holdings[key] = fund_holdings[key]
+        for holding_name, holding_df in fund_holdings.items():
+            try: 
+                holding_amt = portfolio_fund_holdings[holding_name]
+                holding_df['portfolio_holdings'] = holding_df['percent_of_portfolio'] * holding_amt
+            except:
+                logging.warning(f"Unable to add investment amounts for {holding_name}")
 
-        return dict
+        return fund_holdings
 
 
     def define_combined_fund_portfolio(self, fund_holdings: dict, portfolio_fund_holdings: dict) -> None:
@@ -113,8 +139,8 @@ class PortfolioConstructor:
 
         funds_with_investment_amounts = self.add_investment_amounts(fund_holdings, portfolio_fund_holdings)
         df = pd.concat(funds_with_investment_amounts.values(), axis=0, join="inner")
-        df = df.drop(['weight'], axis=1)
-        aggregation_functions = {'name': 'first', 'country': 'first', 'sector': 'first', 'portfolio_holdings': 'sum'}
+        df = df.drop(['CUSIP', 'num_holdings', 'invested_amt_usd', 'percent_of_portfolio'], axis=1)
+        aggregation_functions = {'company_name': 'first', 'country': 'first', 'portfolio_holdings': 'sum'}
         df_new = df.groupby(df['ticker'], as_index=False).aggregate(aggregation_functions)
 
         self._combined_fund_portfolio = df_new
@@ -128,7 +154,7 @@ class PortfolioConstructor:
         stock_holdings = self.portfolio_stock_holdings_df
         
         # rename column headings to be able to concatenate the DataFrames
-        stock_holdings = stock_holdings.rename(columns={"holding": "ticker", "investment_amt": "portfolio_holdings"})
+        stock_holdings = stock_holdings.rename(columns={"investment_amt": "portfolio_holdings"})
         # concat the DataFrames and sum holdings. Adds new ones from stock_holdings but sums ones that already exist
         df = pd.concat([fund_holdings, stock_holdings]).groupby(["ticker"], as_index=False)["portfolio_holdings"].sum()
         
