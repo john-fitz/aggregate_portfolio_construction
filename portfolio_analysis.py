@@ -5,9 +5,12 @@ import os
 import logging
 import copy
 from datetime import date
+import time
 
 from data_collection import DataImport
 from portfolio_aggregation import PortfolioConstructor
+
+import yfinance as yf
 
 class PortfolioAnalysis:
     def __init__(self, portfolio_holdings_pathway: str):
@@ -111,10 +114,55 @@ class PortfolioAnalysis:
         print("Finished importing fund holdings")
     
     def aggregate_portfolio(self) -> None:
+        """ aggregates all holdings into self.aggregaed_holdings """
+        print("Starting to aggregate holdings")
         PC = PortfolioConstructor(self.portfolio_stock_holdings_df, self.portfolio_fund_holdings_df, self.holdings_folder)
         self._aggregated_holdings = PC.full_portfolio_holdings
+        print("Finished aggregating holdings")
     
+    def add_additional_information_to_stock_holdings(self) -> None:
+        """ Uses the Yahoo Finance API to pull in additional information about the holdings """
+        counter = 0
+        full_stock_info = {'ticker': [], 'portfolio_holdings': [], 'country': [], 'sector': [], 'industry': [], "market_cap": []}
+        for ticker, portfolio_holdings in zip(self.aggregated_holdings['ticker'], self.aggregated_holdings['portfolio_holdings']):
+            addition_info = self.query_YF_API(ticker)
+            full_stock_info['ticker'].append(ticker)
+            full_stock_info['portfolio_holdings'].append(portfolio_holdings)
+            full_stock_info['country'].append(addition_info[0])
+            full_stock_info['sector'].append(addition_info[1])
+            full_stock_info['industry'].append(addition_info[2])
+            full_stock_info['market_cap'].append(addition_info[3])
+            counter += 1
+            print(f"gathering information on stock {counter}")
+            if counter % 20 == 0:
+                self._aggregated_holdings = pd.DataFrame.from_dict(full_stock_info)
+                self.save_portfolio_holdings()
+        self._aggregated_holdings = pd.DataFrame.from_dict(full_stock_info)
+        
+    def query_YF_API(self, ticker: str) -> tuple:
+        """ query Yahoo Finance API to pull additional information on stock"""
+        ans = (np.nan, np.nan, np.nan, np.nan)
+        
+        start_time = time.time()
+        while time.time() - start_time <= 10: # timeout after 10 seconds of trying
+            info = yf.Ticker(ticker).info
+            if info['regularMarketPrice'] is not None:
+                try:
+                    country = info['country']
+                    sector = info['sector']
+                    industry = info['industry']
+                    marketCap = info['marketCap']
+                    ans = (country, sector, industry, marketCap)
+                except:
+                    pass
+        if info['regularMarketPrice'] is None:
+            logging.warning(f"Unable to find information on {ticker} on Yahoo Finance")
+        elif ans[0] is None:
+            logging.warning(f"Yahoo Finance query timed out after 10 seconds. Unable to pull information on {ticker}")
+        
+        return ans
     
-    
-    
-    
+    def save_portfolio_holdings(self, save_pathway: str="full_portfolio_holdings.csv") -> None:
+        """ save portfolio_holdings """
+        
+        self.aggregated_holdings.to_csv(save_pathway, index=False)
