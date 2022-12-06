@@ -1,0 +1,7 @@
+﻿ticker,investment_amt,holding_type,sector,country,CIK,series
+LCLAX,10000,fund,nan,nan,0000880366,S000039065
+SCHB,10000,fund,nan,nan,0001454889,S000026631
+AAPL,2000,stock,Technology,United States,nan,nan
+test_stock,2000,stock,Technology,United States,nan,nan
+SPY,10000,fund,nan,nan,0001064642,S000033831
+SCHM,10000,fund,nan,nan,0001454889,S000026635

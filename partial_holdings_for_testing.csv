@@ -1,0 +1,81 @@
+ticker,portfolio_holdings,country,sector,industry,market_cap
+A,1317.32608485,United States,Healthcare,Diagnostics & Research,45707853824.0
+AA,3360.62527856,United States,Basic Materials,Aluminum,9038946304.0
+AAL,3727.69617742,United States,Industrials,Airlines,9278875648.0
+AAN,65.00953845000001,United States,Industrials,Rental & Leasing Services,386298880.0
+AAON,102.4991701,United States,Industrials,Building Products & Equipment,4059500032.0
+AAP,3687.22170624,United States,Consumer Cyclical,Specialty Retail,9074551808.0
+AAPL,112255.33112506999,United States,Technology,Consumer Electronics,2344638742528.0
+AAT,115.16062565,United States,Real Estate,REIT—Diversified,1643026944.0
+AAWW,371.70025338999994,United States,Industrials,Airports & Air Services,2918795776.0
+ABBV,11164.577990950002,United States,Healthcare,Drug Manufacturers—General,289437319168.0
+ABC,3352.87282804,United States,Healthcare,Medical Distribution,35241078784.0
+ABCB,215.03750665,United States,Financial Services,Banks—Regional,3503346944.0
+ABG,548.4702020699999,United States,Consumer Cyclical,Auto & Truck Dealerships,4174605824.0
+ABM,243.96328491999998,United States,Industrials,Specialty Business Services,3075759360.0
+ABMD,3511.5107953,United States,Healthcare,Medical Devices,17195780096.0
+ABNB,1017.0972765600001,United States,Consumer Cyclical,Travel Services,59167424512.0
+ABR,60.6365817,United States,Real Estate,REIT—Mortgage,2111599104.0
+ABSI,1.1097327799999999,United States,Healthcare,Biotechnology,236108336.0
+ABT,7953.723191800002,United States,Healthcare,Medical Devices,183654612992.0
+ABTX,50.65703999,,,,
+ACA,172.60427668,United States,Industrials,Infrastructure Operations,2940862208.0
+ACAD,45.2695151,United States,Healthcare,Biotechnology,2395264256.0
+ACC,2576.25161108,,,,
+ACCD,8.90049208,United States,Healthcare,Health Information Services,517980832.0
+ACCO,16.55819594,United States,Industrials,Business Equipment & Supplies,557153856.0
+ACEL,14.2490564,United States,Consumer Cyclical,Gambling,779817088.0
+ACHC,432.41463659,United States,Healthcare,Medical Care Facilities,7618444800.0
+ACHR,11.919482319999998,United States,Industrials,Aerospace & Defense,536368064.0
+ACI,884.83661686,United States,Consumer Defensive,Grocery Stores,9842323456.0
+ACIW,142.99099933000002,United States,Technology,Software—Infrastructure,2426562048.0
+ACLS,116.74098710999999,United States,Technology,Semiconductor Equipment & Materials,2599652864.0
+ACLX,3.80836181,United States,Healthcare,Biotechnology,
+ACM,3183.1958790900003,United States,Industrials,Engineering & Construction,12121297920.0
+ACMR,13.416480609999999,United States,Technology,Semiconductor Equipment & Materials,168937552.0
+ADBE,13544.0590982,United States,Technology,Software—Infrastructure,157561159680.0
+ADC,278.17042404,United States,Real Estate,REIT—Retail,5090483200.0
+ADEA,103.45712291000001,United States,Technology,Software—Application,
+ADI,3084.44607978,United States,Technology,Semiconductors,87472865280.0
+ADM,3462.53875642,United States,Consumer Defensive,Farm Products,50825216000.0
+ADP,3466.0483078200004,United States,Industrials,Staffing & Employment Services,108940402688.0
+ADPT,240.15623458999997,United States,Healthcare,Biotechnology,1105063552.0
+ADSK,1443.29920545,United States,Technology,Software—Application,42808942592.0
+ADT,312.85745334,United States,Industrials,Security & Protection Services,7980201472.0
+ADTH,11.48225012,United States,Communication Services,Advertising Agencies,147190496.0
+ADTN,59.642595150000005,United States,Technology,Communication Equipment,943418368.0
+ADUS,68.19470137,United States,Healthcare,Medical Care Facilities,1699931392.0
+ADV,10.98294774,United States,Communication Services,Advertising Agencies,694491392.0
+AEE,1283.27927342,United States,Utilities,Utilities—Regulated Electric,22486427648.0
+AEIS,152.05384439,United States,Industrials,Electrical Equipment & Parts,3371805952.0
+AEL,9622.93723516,United States,Financial Services,Insurance—Life,3757898496.0
+AEO,240.09688550000004,United States,Consumer Cyclical,Apparel Retail,2628816896.0
+AEP,2970.88361453,United States,Utilities,Utilities—Regulated Electric,47837106176.0
+AERI,6.9778917300000005,United States,Healthcare,Drug Manufacturers—Specialty & Generic,722201856.0
+AES,4688.27513423,United States,Utilities,Utilities—Diversified,18754664448.0
+AEVA,7.68804569,United States,Consumer Cyclical,Auto Parts,340272736.0
+AFG,3801.43712623,United States,Financial Services,Insurance—Property & Casualty,11789146112.0
+AFL,3132.5107737999997,United States,Financial Services,Insurance—Life,47028023296.0
+AFRM,1316.5292391000003,United States,Technology,Software—Infrastructure,3362236928.0
+AGCO,2499.0924399399996,United States,Industrials,Farm & Heavy Construction Machinery,9946213376.0
+AGEN,10.779769889999999,United States,Healthcare,Biotechnology,657487360.0
+AGIO,25.63538079,United States,Healthcare,Biotechnology,1553223168.0
+AGL,258.5521209,United States,Healthcare,Medical Care Facilities,6999186432.0
+AGM,22.52388177,United States,Financial Services,Credit Services,1299077248.0
+AGNC,1820.20160903,United States,Real Estate,REIT—Mortgage,5086358528.0
+AGR,81.60695206999999,United States,Utilities,Utilities—Regulated Electric,16607221760.0
+AGTI,12.93646149,United States,Healthcare,Health Information Services,2372658432.0
+AGX,16.31404074,United States,Industrials,Engineering & Construction,594801344.0
+AGYS,29.07689144,United States,Technology,Software—Application,1561088384.0
+AHCO,42.17619214,United States,Healthcare,Medical Devices,2862454784.0
+AHH,50.779367050000005,United States,Real Estate,REIT—Diversified,719613184.0
+AI,384.19696924000004,United States,Technology,Information Technology Services,1259393664.0
+AIG,3647.6763157699997,United States,Financial Services,Insurance—Diversified,51221082112.0
+AIMC,61.03027192,United States,Industrials,Specialty Industrial Machinery,3856873472.0
+AIN,139.20970319,United States,Consumer Cyclical,Textile Manufacturing,3315166720.0
+AIR,108.84040476000001,United States,Industrials,Aerospace & Defense,1638308480.0
+AIRC,2151.70792334,United States,Real Estate,REIT—Residential,5654599680.0
+AIRS,2.0253566,United States,Healthcare,Medical Care Facilities,182499856.0
+AIT,221.34796458,United States,Industrials,Industrial Distribution,4859476992.0
+AIZ,3323.44640489,United States,Financial Services,Insurance—Specialty,7367656960.0
+AJG,1424.59590583,United States,Financial Services,Insurance Brokers,40622342144.0

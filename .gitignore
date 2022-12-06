@@ -40,3 +40,5 @@ coverage.xml
 .pydevproject
 
 *.ipynb
+
+fund_holdings/
