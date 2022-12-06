@@ -43,6 +43,15 @@ class DataVisualizations:
         sns.catplot(x = 'holding_type', kind = 'count', data = self.df).set(Title = '0 = fund, 1 = stock')
         plt.show()
         
+        # pie chart
+        categories = self.df['holding_type'].value_counts().keys()
+        values = self.df['holding_type'].value_counts().values
+
+        plt.pie(values, labels=categories)
+
+        plt.axis('equal')
+        plt.show()
+        
     def makePie(self) -> None:
         """ Pie Charts """
         y = np.array([35, 25, 25, 15])
@@ -55,3 +64,20 @@ class DataVisualizations:
 
         plt.pie(y, labels = mylabels, explode = myexplode)
         plt.show()
+    
+    def compareCapsize(self) -> None:
+        df['cap_size']=""
+
+        df.loc[df['investment_amt'] <= 2000, 'cap_size'] = 'small'
+        df.loc[(df['investment_amt'] > 2000) & (df['investment_amt'] <= 6000), 'cap_size'] = 'mid'
+        df.loc[df['investment_amt'] > 6000, 'cap_size'] = 'large'
+        
+        sns.countplot(data = df, x = 'cap_size').set(title = 'Breakdown by Cap size')
+    
+    def map_graph(self) -> None:
+        invst_sum = self.df.groupby("country")["investment_amt"].sum()
+
+        fig = px.choropleth(self.df, locationmode='country names', locations = invst_sum.keys(), color = value)
+        fig.update_layout(coloraxis_colorbar=dict(title="investment_amount"))
+        fig.show()
+        
