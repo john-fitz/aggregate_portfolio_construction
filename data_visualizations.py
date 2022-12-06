@@ -52,19 +52,6 @@ class DataVisualizations:
 
         plt.axis('equal')
         plt.show()
-        
-    def makePie(self) -> None:
-        """ Pie Charts """
-        y = np.array([35, 25, 25, 15])
-        
-        # if this is the investement amount of four companies
-        mylabels = ["Apples", "Bananas", "Cherries", "Dates"]
-        myexplode = [0.2, 0, 0, 0]
-
-        # if this is name of companies
-
-        plt.pie(y, labels = mylabels, explode = myexplode)
-        plt.show()
     
     def compareCapsize(self) -> None:
         df['cap_size']=""
