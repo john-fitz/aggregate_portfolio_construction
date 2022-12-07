@@ -73,7 +73,7 @@ class DataVisualizations:
     def map_graph(self) -> None:
         invst_sum = self.aggregate_holdings_df.groupby("country")["portfolio_holdings"].sum()
 
-        fig = px.choropleth(self.aggregate_holdings_df, locationmode='country names', locations = invst_sum.keys(), color = value)
+        fig = px.choropleth(self.aggregate_holdings_df, locationmode='country names', locations = invst_sum.keys(), color = invst_sum.values)
         fig.update_layout(coloraxis_colorbar=dict(title="portfolio_holdings"))
         fig.show()
         
