@@ -55,8 +55,8 @@ class DataVisualizations:
         plt.show()
         
         # pie chart
-        categories = self.df['holding_type'].value_counts().keys()
-        values = self.df['holding_type'].value_counts().values
+        categories = self.portfolio_holdings_df['holding_type'].value_counts().keys()
+        values = self.portfolio_holdings_df['holding_type'].value_counts().values
 
         plt.pie(values, labels=categories)
 
@@ -64,18 +64,27 @@ class DataVisualizations:
         plt.show()
     
     def compareCapsize(self) -> None:
-        df['cap_size']=""
+        self.aggregate_holdings_df['cap_size']=""
 
-        df.loc[df['investment_amt'] <= 2000, 'cap_size'] = 'small'
-        df.loc[(df['investment_amt'] > 2000) & (df['investment_amt'] <= 6000), 'cap_size'] = 'mid'
-        df.loc[df['investment_amt'] > 6000, 'cap_size'] = 'large'
+        self.aggregate_holdings_df["cap_size"] = self.aggregate_holdings_df['market_cap'].apply(self.market_cap_categorization)
         
-        sns.countplot(data = df, x = 'cap_size').set(title = 'Breakdown by Cap size')
+        sns.countplot(data = self.aggregate_holdings_df, x = 'cap_size').set(title = 'Breakdown by Cap size')
     
     def map_graph(self) -> None:
-        invst_sum = self.df.groupby("country")["investment_amt"].sum()
+        invst_sum = self.aggregate_holdings_df.groupby("country")["portfolio_holdings"].sum()
 
-        fig = px.choropleth(self.df, locationmode='country names', locations = invst_sum.keys(), color = value)
-        fig.update_layout(coloraxis_colorbar=dict(title="investment_amount"))
+        fig = px.choropleth(self.aggregate_holdings_df, locationmode='country names', locations = invst_sum.keys(), color = value)
+        fig.update_layout(coloraxis_colorbar=dict(title="portfolio_holdings"))
         fig.show()
         
+    def market_cap_categorization(self, market_cap: float) -> str:
+        category = ""
+        
+        if market_cap >= 10_000_000_000:
+            category = 'large'
+        elif market_cap >= 2_000_000_000:
+            category = 'mid'
+        else:
+            category = 'small'
+        
+        return category
