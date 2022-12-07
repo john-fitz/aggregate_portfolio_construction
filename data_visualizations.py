@@ -51,7 +51,7 @@ class DataVisualizations:
     def compareHolding(self) -> None:
         """ Comparing holding types """
         
-        sns.catplot(x = 'holding_type', kind = 'count', data = self.portfolio_holdings_df).zset(Title = '0 = fund, 1 = stock')
+        sns.catplot(x = 'holding_type', kind = 'count', data = self.portfolio_holdings_df).set(Title = '0 = fund, 1 = stock')
         plt.show()
         
         # pie chart
